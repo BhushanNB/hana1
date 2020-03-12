@@ -1,0 +1,177 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Calculation:scenario xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:Calculation="http://www.sap.com/ndb/BiModelCalculation.ecore" id="hana1.db1::cv_1" applyPrivilegeType="NONE" dataCategory="CUBE" schemaVersion="3.0" outputViewType="Aggregation" cacheInvalidationPeriod="NONE" enforceSqlExecution="false">
+<descriptions defaultDescription="cv_1"/>
+<localVariables/>
+<variableMappings/>
+<dataSources>
+  <DataSource id="hana1.db1::transaction">
+    <resourceUri>hana1.db1::transaction</resourceUri>
+  </DataSource>
+  <DataSource id="hana1.db1::customer">
+    <resourceUri>hana1.db1::customer</resourceUri>
+  </DataSource>
+  <DataSource id="hana1.db1::product">
+    <resourceUri>hana1.db1::product</resourceUri>
+  </DataSource>
+</dataSources>
+<calculationViews>
+  <calculationView xsi:type="Calculation:ProjectionView" id="Projection_1">
+    <viewAttributes>
+      <viewAttribute id="cid"/>
+      <viewAttribute id="pid"/>
+      <viewAttribute id="qty"/>
+      <viewAttribute id="amt"/>
+    </viewAttributes>
+    <calculatedViewAttributes/>
+    <restrictedViewAttributes/>
+    <input node="hana1.db1::transaction">
+      <mapping xsi:type="Calculation:AttributeMapping" target="cid" source="cid"/>
+      <mapping xsi:type="Calculation:AttributeMapping" target="pid" source="pid"/>
+      <mapping xsi:type="Calculation:AttributeMapping" target="qty" source="qty"/>
+      <mapping xsi:type="Calculation:AttributeMapping" target="amt" source="amt"/>
+    </input>
+  </calculationView>
+  <calculationView xsi:type="Calculation:ProjectionView" id="Projection_2">
+    <viewAttributes>
+      <viewAttribute id="id"/>
+      <viewAttribute id="name"/>
+      <viewAttribute id="country"/>
+    </viewAttributes>
+    <calculatedViewAttributes/>
+    <restrictedViewAttributes/>
+    <input node="hana1.db1::customer">
+      <mapping xsi:type="Calculation:AttributeMapping" target="id" source="id"/>
+      <mapping xsi:type="Calculation:AttributeMapping" target="name" source="name"/>
+      <mapping xsi:type="Calculation:AttributeMapping" target="country" source="country"/>
+    </input>
+  </calculationView>
+  <calculationView xsi:type="Calculation:JoinView" id="Join_1" joinType="leftOuter">
+    <viewAttributes>
+      <viewAttribute id="name"/>
+      <viewAttribute id="pid"/>
+      <viewAttribute id="qty" aggregationType="sum"/>
+      <viewAttribute id="amt" aggregationType="sum"/>
+      <viewAttribute hidden="true" id="JOIN$cid$id"/>
+    </viewAttributes>
+    <calculatedViewAttributes/>
+    <restrictedViewAttributes/>
+    <input node="Projection_1">
+      <mapping xsi:type="Calculation:AttributeMapping" target="pid" source="pid"/>
+      <mapping xsi:type="Calculation:AttributeMapping" target="qty" source="qty"/>
+      <mapping xsi:type="Calculation:AttributeMapping" target="amt" source="amt"/>
+      <mapping xsi:type="Calculation:AttributeMapping" target="JOIN$cid$id" source="cid"/>
+    </input>
+    <input node="Projection_2">
+      <mapping xsi:type="Calculation:AttributeMapping" target="name" source="name"/>
+      <mapping xsi:type="Calculation:AttributeMapping" target="JOIN$cid$id" source="id"/>
+    </input>
+    <joinAttribute name="JOIN$cid$id"/>
+  </calculationView>
+  <calculationView xsi:type="Calculation:ProjectionView" id="Projection_3">
+    <viewAttributes>
+      <viewAttribute id="id"/>
+      <viewAttribute id="name"/>
+    </viewAttributes>
+    <calculatedViewAttributes/>
+    <restrictedViewAttributes/>
+    <input node="hana1.db1::product">
+      <mapping xsi:type="Calculation:AttributeMapping" target="id" source="id"/>
+      <mapping xsi:type="Calculation:AttributeMapping" target="name" source="name"/>
+    </input>
+  </calculationView>
+  <calculationView xsi:type="Calculation:JoinView" id="Join_2" joinType="leftOuter">
+    <viewAttributes>
+      <viewAttribute id="name"/>
+      <viewAttribute id="name_1"/>
+      <viewAttribute id="qty" aggregationType="sum"/>
+      <viewAttribute id="amt" aggregationType="sum"/>
+      <viewAttribute hidden="true" id="JOIN$pid$id"/>
+    </viewAttributes>
+    <calculatedViewAttributes/>
+    <restrictedViewAttributes/>
+    <input node="Join_1">
+      <mapping xsi:type="Calculation:AttributeMapping" target="name" source="name"/>
+      <mapping xsi:type="Calculation:AttributeMapping" target="qty" source="qty"/>
+      <mapping xsi:type="Calculation:AttributeMapping" target="amt" source="amt"/>
+      <mapping xsi:type="Calculation:AttributeMapping" target="JOIN$pid$id" source="pid"/>
+    </input>
+    <input node="Projection_3">
+      <mapping xsi:type="Calculation:AttributeMapping" target="name_1" source="name"/>
+      <mapping xsi:type="Calculation:AttributeMapping" target="JOIN$pid$id" source="id"/>
+    </input>
+    <joinAttribute name="JOIN$pid$id"/>
+  </calculationView>
+</calculationViews>
+<logicalModel id="Join_2">
+  <attributes>
+    <attribute id="Customer_name" order="1" displayAttribute="false" attributeHierarchyActive="false">
+      <descriptions defaultDescription="name"/>
+      <keyMapping columnObjectName="Join_2" columnName="name"/>
+    </attribute>
+    <attribute id="Product" order="2" displayAttribute="false" attributeHierarchyActive="false">
+      <descriptions defaultDescription="name"/>
+      <keyMapping columnObjectName="Join_2" columnName="name_1"/>
+    </attribute>
+  </attributes>
+  <calculatedAttributes/>
+  <baseMeasures>
+    <measure id="qty" order="3" aggregationType="sum" measureType="simple">
+      <descriptions defaultDescription="qty"/>
+      <measureMapping columnObjectName="Join_2" columnName="qty"/>
+    </measure>
+    <measure id="amt" order="4" aggregationType="sum" measureType="simple">
+      <descriptions defaultDescription="amt"/>
+      <measureMapping columnObjectName="Join_2" columnName="amt"/>
+    </measure>
+  </baseMeasures>
+  <calculatedMeasures/>
+  <restrictedMeasures/>
+  <localDimensions/>
+</logicalModel>
+<layout>
+  <shapes>
+    <shape expanded="true" modelObjectName="Output" modelObjectNameSpace="MeasureGroup">
+      <upperLeftCorner x="328.6900820831794" y="112"/>
+    
+      <rectangleSize width="160"/>
+    </shape>
+  
+    <shape expanded="true" modelObjectName="Projection_1" modelObjectNameSpace="CalculationView">
+      <upperLeftCorner x="92" y="536.9999976158142"/>
+      <rectangleSize height="30" width="160"/>
+    </shape>
+    <shape expanded="true" modelObjectName="Projection_2" modelObjectNameSpace="CalculationView">
+      <upperLeftCorner x="302" y="536.9999976158142"/>
+      <rectangleSize height="30" width="160"/>
+    </shape>
+    <shape expanded="true" modelObjectName="Join_1" modelObjectNameSpace="CalculationView">
+      <upperLeftCorner x="118.66666666666666" y="376.9999988079071"/>
+      <rectangleSize height="30" width="160"/>
+    </shape>
+    <shape modelObjectName="Projection_1" modelObjectNameSpace="Join_1" modelObjectType="JoinNodeInput">
+      <upperLeftCorner x="20" y="30"/>
+      <rectangleSize width="136.0234375"/>
+    </shape>
+    <shape modelObjectName="Projection_2" modelObjectNameSpace="Join_1" modelObjectType="JoinNodeInput">
+      <upperLeftCorner x="320" y="30"/>
+      <rectangleSize width="136.0234375"/>
+    </shape>
+    <shape expanded="true" modelObjectName="Projection_3" modelObjectNameSpace="CalculationView">
+      <upperLeftCorner x="395.83468516943316" y="376.9999988079071"/>
+      <rectangleSize height="30" width="160"/>
+    </shape>
+    <shape expanded="true" modelObjectName="Join_2" modelObjectNameSpace="CalculationView">
+      <upperLeftCorner x="328.6900820831794" y="217"/>
+      <rectangleSize height="30" width="160"/>
+    </shape>
+    <shape modelObjectName="Join_1" modelObjectNameSpace="Join_2" modelObjectType="JoinNodeInput">
+      <upperLeftCorner x="20" y="30"/>
+      <rectangleSize width="113.51611328125"/>
+    </shape>
+    <shape modelObjectName="Projection_3" modelObjectNameSpace="Join_2" modelObjectType="JoinNodeInput">
+      <upperLeftCorner x="320" y="30"/>
+      <rectangleSize width="136.0234375"/>
+    </shape>
+  </shapes>
+</layout>
+</Calculation:scenario>
