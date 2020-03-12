@@ -1,0 +1,22 @@
+namespace hana1.db1;
+
+entity customer
+{
+key	id : String(10);
+	name : String(50);
+	country : String(50);
+};
+
+entity product
+{
+	key id :String(10);
+	name : String(50);
+};
+
+entity transaction
+{
+	cid :String(10);
+	pid : String(10);
+	qty : Integer;
+	amt :Integer;
+};
