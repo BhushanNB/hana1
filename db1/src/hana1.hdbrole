@@ -1,0 +1,7 @@
+{
+	"role":{
+		"name": "hana1.db1::hana1#",
+		"schema_privileges": [{ "privileges_with_grant_option": ["SELECT"] 	}],
+		"schema_analytic_privileges": [{ "privileges_with_grant_option": ["hana1.db1::ap1"] }]
+	}
+}
